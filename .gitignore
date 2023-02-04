@@ -1,0 +1,7 @@
+.*.swp
+*.log
+*.aux
+*.bak
+*.bbl
+*.blg
+project.pdf

@@ -7,7 +7,11 @@
 \usepackage[footnotesize,bf]{caption}
 \usepackage[left=1.1in,right=1.1in,top=1in]{geometry}
 
-\usepackage{mathdefs}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\mathd}{\textrm{d}}
+\newcommand{\ddx}[1]{\frac{\mathd}{\mathd #1}}
+\newcommand{\N}{\mathbbm{N}}
+\newcommand{\R}{\mathbbm{R}}
 
 %% Patch for amsart date
 \usepackage{etoolbox}
@@ -24,13 +28,13 @@
 %%
 
 \title{Project 1: Finite difference methods}
-\author{Akil Narayan}
+\author{XXXXXXX}
 \date{\today}
 
 \begin{document}
 \maketitle
 
-\textbf{1.} (Finite difference methods in 1D)\\
+\noindent\textbf{1.} (Finite difference methods in 1D)\\
 Consider the ordinary differential equation:
 \begin{align}\label{eq:ode}
   \ddx{x} \left(\kappa(x) \ddx{x} u(x) \right) &= f(x), & x &\in [0,1],
@@ -54,7 +58,7 @@ with homogeneous Dirichlet boundary conditions, $u(0) = u(1) = 0$ , and where sc
     \item[(c)] Implement the scheme above for solving \eqref{eq:ode}, setting $f$ to be the function identified in part (b), so that you know the exact solution. Show that indeed you achieve second-order convergence in $h$ (say in the $h^{d/2}$-scaled vector $\ell^2$ norm) . (To ``show'' this, plot on a log scale the error as a function of a discretization parameter, such as $h$ or $N$, and verify that the slope of the resulting line is what is expected.)
   \end{itemize}
 
-\textbf{2.} (Finite difference methods in 2/3D)\\
+\noindent\textbf{2.} (Finite difference methods in 2/3D)\\
   Consider the following partial differential equation that generalizes \eqref{eq:ode}:
   \begin{align}\label{eq:laplace}
     \nabla \cdot \left(\kappa(\bs{x}) \nabla \bs{u}(\bs{x}) \right) &= f(\bs{x}), & \bs{x} \in [0,1]^d,
@@ -73,7 +77,7 @@ with homogeneous Dirichlet boundary conditions, $u(0) = u(1) = 0$ , and where sc
     \item[(b)] Can you extend your solver to three dimensions? Do you still observe high-order convergence?  Note that in either 2 or 3 dimensions, you may want to consider iterative methods for solving the linear system. (Does the matrix $\bs{A}$ in your linear system have special properties or structure?) Note also that for these problems, if $\bs{u}$ is a vector containing the degrees of freedom for the solution $u$, then you can evaluate $\bs{u} \mapsto \bs{A} \bs{u}$ \textit{without} forming the full $d$-dimensional $\bs{A}$ matrix, and instead using only ``one-dimensional'' versions of $\bs{A}$.
   \end{itemize}
 
-  \textbf{3.} (Finite difference methods for time-dependent problems)\\
+\noindent\textbf{3.} (Finite difference methods for time-dependent problems)\\
   Consider the PDE,
   \begin{align*}
     u_t + a u_x &= 0, & u(x,0) &= \exp(\sin 2 \pi x), & x \in [0, 1),

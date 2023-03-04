@@ -3,5 +3,5 @@ PROJECT=project
 BIBTEX=bibtex
 
 all:
-	$(PDFLATEX) $(PROJECT)
-	$(PDFLATEX) $(PROJECT)
+	$(PDFLATEX) ./Problem1/project
+	$(PDFLATEX) ./Problem1/project

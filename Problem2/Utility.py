@@ -56,6 +56,7 @@ def operatorMat(M, xs, h):
             A[i, i+1] = k(xi+0.5*h)/ (h*h)
         if i >0:
             A[i, i-1] = k(xi-0.5*h) / (h*h)
+        A = A
     return A
 
 def makeTemporalLaplacainBlock(dim):

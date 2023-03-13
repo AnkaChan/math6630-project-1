@@ -126,16 +126,28 @@ u_{xx}(x_i, y_i) = \frac{1}{h^2} \left[ { k_{i-1/2}u(x_{i-1}, y_i)  - (k_{i+1/2}
 u_{yy}(x_i, y_i) = \frac{1}{h^2} \left[ {  k_{i-1/2}u(x_{i}, y_{i-1})  - (k_{i+1/2}-k_{i-1/2})u(x_{i}, y_i) -  k_{i+1/2}u(x_{i}, y_{i+1} } \right]
 \end{split}
 \end{equation}
+Then we have:
+\begin{equation}
+\nabla \cdot \left(\kappa(\bs{x}) \nabla \bs{u}(\bs{x}) \right) = \left[ u_{xx}(x_i, y_i) + u_{yy}(x_i, y_i) \right]_{i, j}
+\end{equation}
 The stencil is:
 \begin{equation}
 \begin{bmatrix}
-&  & k_{i-1/2} &  \\
+  &k_{i-1/2} &  \\
 k_{2-1/2} & -2(k_{2+1/2}-k_{2-1/2}) & k_{2+1/2}  \\
   &   k_{2+1/2}  &  
 
 \end{bmatrix}  \frac{1}{h^2}
 \end{equation}
-Note that I count $x, y$ using matrix coordinate, where the origin is at the top left corner.
+Note that I the direction of $x, y$ is defined using the matrix coordinate system, where the origin is at the top left corner. 
+We discretize $u$ in both x and y direction with $M$ steps, and flatten it in column-major order, this gives us a vector $\mathbf{u} \in \mathbb{R}^{M^2}$. Similarly, we can convert the $\nabla \cdot \left(\kappa(\bs{x}) \nabla \bs{u}(\bs{x}) \right)$ to a linear operator on  $\mathbf{u}$, and the $(i + jM)$-th row of $\mathbf{A}$, which corresponds to  $u_{i,j}$ is:
+\begin{equation}
+\begin{matrix}
+ \frac{1}{h^2}k_{2-1/2} & \dots & \frac{1}{h^2} k_{i-1-1/2} & \frac{-2}{h^2}(k_{2+1/2}-k_{2-1/2})& \frac{1}{h^2}k_{2+1/2}               & \dots &  \frac{1}{h^2}k_{2+1/2} \\
+ [i + M(j-1)]\text{-th} &       &   [i-1 + jM]\text{-th}    &   [i + jM]\text{-th}   &   [i+1 + jM]\text{-th}  &       &    [i + (j+1)M]\text{-th}   
+\end{matrix} 
+\end{equation}
+
 
 % Consider the ordinary differential equation:
 % \begin{align}\label{eq:ode}

@@ -30,12 +30,17 @@
 \makeatother
 %%
 
+\usepackage[dvipsnames]{xcolor}
+\newcommand{\an}[1]{{\leavevmode\color{BrickRed}{#1}}}
+
 \title{Project 1: Finite difference methods}
 \author{Anka Chen}
 \date{\today}
 
 \begin{document}
 \maketitle
+
+\an{You should really keep the problem statement in here; otherwise you will forget what this report is talking about if you read it later.}
 
 \section{Finite difference methods in 1D}
 \subsection{Local Truncation Error}
@@ -48,11 +53,11 @@ First let's write out the $\widetilde{D}_0 \left( \kappa(x_j) \widetilde{D}_0 u_
 \end{equation}
 We do the Taylor expansion for $\kappa$ at the point $x$:
 \begin{equation}
-\kappa(x+h/2)=k(x) + \kappa'(x)\frac{h}{1} + \kappa''(x)\frac{h^2}{8}  + \kappa^{(3)}(x)\frac{h^3}{48} + o(h^3)
+  \kappa(x+h/2)=\an{\kappa}(x) + \kappa'(x)\frac{h}{1} + \kappa''(x)\frac{h^2}{8}  + \kappa^{(3)}(x)\frac{h^3}{48} + o(h^3)
 \end{equation}
 similarly:
 \begin{equation}
-\kappa(x-h/2)=k(x) - \kappa'(x)\frac{h}{1} + \kappa''(x)\frac{h^2}{8}  - \kappa^{(3)}(x)\frac{h^3}{48} + o(h^3)
+  \kappa(x-h/2)=\an{\kappa}(x) - \kappa'(x)\frac{h}{1} + \kappa''(x)\frac{h^2}{8}  - \kappa^{(3)}(x)\frac{h^3}{48} + o(h^3)
 \end{equation}
 
 We do Taylor expansion for $u$ at the point $x$ as well: 
@@ -82,6 +87,7 @@ Since $\ddx{x} \left(\kappa(x) \ddx{x} u(x) \right) = \kappa(x)u''(x) + \kappa'(
 Thus this is a second-order scheme.
 
 \subsection{Local Truncation Error}
+\an{Did you mean to title this section something different?}
 Denote $\kappa(x_j-h/2)$ as $k_{j-1/2}$ and  $\kappa(x_j+h/2)$ as $k_{j+1/2}$, we can convert the operator to a matrix:
 \begin{equation}
 \mathbf{A}=
@@ -96,9 +102,9 @@ k_{2-1/2} & - k_{2+1/2}-k_{2-1/2} & k_{2+1/2} &\hdots & 0 \\
 I pick $u(x)=sin(\pi x), x \in [0,2]$ as the input function, see Fig. \ref{fig:solution}a.
 I compute $f$ analytically:
 \begin{equation}
-    f(x) = k'(x)u'(x) + k(x)u''(x)
+  f(x) = \an{\kappa}'(x)u'(x) + \an{\kappa}(x)u''(x)
 \end{equation}
-I also confirmed the approximation of $f$ given by $\vec{f}_approx = A \vec{u}$, to make sure it is correct, see  Fig. \ref{fig:solution}bc.
+I also confirmed the approximation of $f$ given by $\vec{f}_{approx} = A \vec{u}$, to make sure it is correct, see  Fig. \ref{fig:solution}bc.
 
 \begin{figure}[H]
     \centering
@@ -116,11 +122,17 @@ Please see Fig.\ref{fig:error} for how the error and LTEs related to the steps o
 \end{figure}
 
 \paragraph{An interesting finding}: When I am implementing the algorithm, I mistakenly computed $h$ as $\frac{1}{M+2}$ instead of  $\frac{1}{M+1}$. This will only affect the elements in $\mathbf{A}$. It turns out, even in this case, the solution will still converge, but with first-order accuracy. Because $h$ is computed incorrectly, it adds a first-order error term to the solution, making it a first-order scheme. 
+\an{Yep, this is because
+\begin{align*}
+  \frac{1}{M+2} = \frac{1}{M+1} \left( 1 - \frac{1}{M+2}\right) \sim h \left(1 - h\right)
+\end{align*}
+i.e., replacing $M+1$ with $M+2$ causes relative error in $h$ of $\mathcal{O}(h)$, so that anything you compute makes an error of $\mathcal{O}(h)$.
+}
 
 \section{Finite difference methods in 2/3D }
 \subsection{Discretization}
 We just need to discretize the operator in two directions as we do in Problem 1:
-\begin{equation}
+\begin{equation}\label{eq:u2d}
 \begin{split}
 u_{xx}(x_i, y_i) = \frac{1}{h^2} \left[ { k_{i-1/2}u(x_{i-1}, y_i)  - (k_{i+1/2}-k_{i-1/2})u(x_{i}, y_i) -  k_{i+1/2}u(x_{i+1}, y_i) } \right]\\
 u_{yy}(x_i, y_i) = \frac{1}{h^2} \left[ {  k_{i-1/2}u(x_{i}, y_{i-1})  - (k_{i+1/2}-k_{i-1/2})u(x_{i}, y_i) -  k_{i+1/2}u(x_{i}, y_{i+1} } \right]
@@ -139,6 +151,7 @@ k_{2-1/2} & -2(k_{2+1/2}-k_{2-1/2}) & k_{2+1/2}  \\
 
 \end{bmatrix}  \frac{1}{h^2}
 \end{equation}
+\an{I don't think I understand your notation above (and below): you need double indices on $k$/$\kappa$ to properly index which direction you're shifting. E.g., in \eqref{eq:u2d} your $k_{i - 1/2}$ should mean two different across the equations.}
 Note that I the direction of $x, y$ is defined using the matrix coordinate system, where the origin is at the top left corner. 
 We discretize $u$ in both x and y direction with $M$ steps, and flatten it in column-major order, this gives us a vector $\mathbf{u} \in \mathbb{R}^{M^2}$. Similarly, we can convert the $\nabla \cdot \left(\kappa(\bs{x}) \nabla \bs{u}(\bs{x}) \right)$ to a linear operator on  $\mathbf{u}$, and the $(i + jM)$-th row of $\mathbf{A}$, which corresponds to  $u_{i,j}$ is:
 \begin{equation}
@@ -148,6 +161,7 @@ We discretize $u$ in both x and y direction with $M$ steps, and flatten it in co
 \end{matrix} 
 \end{equation}
 
+\an{I'm not sure why you decided to keep this 2D discussion in here...it's incomplete (as well as the code).}
 
 % Consider the ordinary differential equation:
 % \begin{align}\label{eq:ode}
